@@ -3,11 +3,23 @@
         <form action="" id="app" method="post">
             <h2>Входные параметры:</h2>
             <div class="input-container">
-                <input type="number" name="p_input" v-model="P_input" min="1" required />
+                <input type="number" 
+                    name="p_input" 
+                    v-model="P_input"
+                     min="1" 
+                     @keypress="NumbersOnly"
+                     required />
                 <label>Давление воздуха <b>P₀</b> на входе в сопло (Па)</label>
             </div>
             <div class="input-container">
-                <input type="number" class="inputbox" name="t_input" v-model="T_input" min="1" required />
+                <input 
+                    type="number"
+                    class="inputbox" 
+                    name="t_input" 
+                    v-model="T_input"
+                    min="1"
+                    @keypress="NumbersOnly" 
+                    required />
                 <label>Температура воздуха <b>T₀</b> на входе в сопло (К)</label>
             </div>
             <div class="input-container">
@@ -17,6 +29,7 @@
                     name="g"
                     v-model="G"
                     min="0"
+                    @keypress="NumbersOnly"
                     required
                 />
                 <label>Расход воздуха <b>G</b> через сопло (Кг/с)</label>
@@ -29,6 +42,7 @@
                     v-model="Alpha"
                     min="1"
                     max="89"
+                    @keypress="NumbersOnly"
                     required/>
                 <label>Угол раскрытия сопла <b>α</b> - входная часть (°)</label>
             </div>
@@ -49,6 +63,17 @@ export default {
             Alpha: 14,
             Betta: 22,
         };
+    },
+    methods: {
+        NumbersOnly(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+            evt.preventDefault();
+            } else {
+            return true;
+            }
+        }
     },
 };
 </script>
