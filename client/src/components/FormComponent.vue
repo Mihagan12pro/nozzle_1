@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <form action="" id="app" method="post">
+        <form action="http://localhost:8081/params" id="app" method="post">
             <h2>Входные параметры:</h2>
             <div class="input-container">
                 <input type="number" 
