@@ -71,6 +71,11 @@ app.get("/params", function (req, res) {
     });
 });
 
+app.use("/cleaned", function (req, res, next) {
+    res.send({ cleaned: `${cleaned}` });
+    next();
+});
+
 app.listen(PORT, () => console.log(`server started on port ${PORT}`));
 
 
