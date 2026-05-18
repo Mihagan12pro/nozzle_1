@@ -41,6 +41,19 @@
             >
                 {{ cleaned || "Очистка файлов предыдущего решения" }}
             </p>
+            
+            <p
+                :class="{
+                    green:
+                    changeUserParams ==
+                    'Файл с входными значениями успешно изменен.',
+                    red:
+                    changeUserParams ==
+                    'Не удалось внести изменения в файл с входными значениями.',
+                }"
+                >
+                {{ changeUserParams || "Изменение файла с входными данными" }}
+            </p>
         </div>
       </div>
     </div>
@@ -60,6 +73,7 @@
             Alpha: "",
             Betta: "",
             cleaned: "",
+            changeUserParams: "",
         }
     },
     created() {
@@ -88,11 +102,22 @@
                     let json = response.data;
                     this.cleaned = json.cleaned;
                     console.log(json);
+                    this.changeParams();
                 })
                 .catch((error) => console.log(error));
         },
-    }
-  };
+        changeParams() {
+            axios
+                .get('http://localhost:8081/changeUserParams/')
+                .then((response) => {
+                let json = response.data;
+                this.changeUserParams = json.changed;
+                console.log(json);
+                })
+                .catch((error) => console.log(error));
+            },
+        },
+    };
 </script>
 
 <style scoped>
