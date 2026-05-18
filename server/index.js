@@ -36,6 +36,9 @@ let betta = "";
 let cleaned = "";  
 let spawnClean = null;
 
+let changed_params = "";
+let spawnchangeUserParams = null;
+
 app.get("/", function (req, res) {
     console.log("/");
 });
@@ -103,4 +106,37 @@ async function cleanSh() {
     spawnClean.on("close", (code) => {
         console.log(`child process CLEAN exited with code ${code}`);
     });
+    spawnClean.on("spawn", () => {
+        cleaned = "Файлы предыдущего решения успешно удалены.";
+        console.log(`cleaned`);
+        changeUserParams();
+    });
+}
+
+async function changeUserParams() {
+  spawnchangeUserParams = spawn(
+    `cd /home/vboxuser/OpenFOAM/vboxuser-13/run/nozzle_1/;
+    sed -i "2s/.*/${p_input}/;5s/.*/${t_input}/;8s/.*/${p_output}/;11s/.*/${g}/;14s/.*/${alpha}/;17s/.*/${betta}/" params.txt;
+    `,
+    [],
+    { shell: true, signal }
+  );
+  spawnchangeUserParams.stdout.on("data", (data) => {
+    //console.log(`stdout: ${data}`);
+  });
+  spawnchangeUserParams.stderr.on("data", (data) => {
+    console.log(`stderr: ${data}`);
+  });
+  spawnchangeUserParams.on("error", (error) => {
+    changed_params =
+        "Не удалось внести изменения в файл с входными значениями.";
+    console.log(`error: ${error.message}`);
+  });
+  spawnchangeUserParams.on("spawn", () => {
+    changed_params = "Файл с входными значениями успешно изменен.";
+    console.log(`params.txt changed`);
+  });
+  spawnchangeUserParams.on("close", (code) => {
+    console.log(`child process changeUserParams exited with code ${code}`);
+  });
 }
