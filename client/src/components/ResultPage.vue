@@ -41,7 +41,7 @@
             >
                 {{ cleaned || "Очистка файлов предыдущего решения" }}
             </p>
-            
+
             <p
                 :class="{
                     green:
@@ -53,6 +53,17 @@
                 }"
                 >
                 {{ changeUserParams || "Изменение файла с входными данными" }}
+            </p>
+
+            <p
+                :class="{
+                    green: changed_files == 'Файлы OpenFOAM успешно изменены.',
+                    red:
+                    changed_files ==
+                    'Не удалось изменить параметры в файлах OpenFOAM.',
+                }"
+                >
+                {{ changed_files || "Изменение файлов OpenFOAM" }}
             </p>
         </div>
       </div>
@@ -74,6 +85,7 @@
             Betta: "",
             cleaned: "",
             changeUserParams: "",
+            changed_files: "",
         }
     },
     created() {
@@ -104,18 +116,29 @@
                     console.log(json);
                     this.changeParams();
                 })
-                .catch((error) => console.log(error));
+            .catch((error) => console.log(error));
         },
         changeParams() {
             axios
                 .get('http://localhost:8081/changeUserParams/')
                 .then((response) => {
-                let json = response.data;
-                this.changeUserParams = json.changed;
-                console.log(json);
+                    let json = response.data;
+                    this.changeUserParams = json.changed;
+                    console.log(json);
+                    this.changeFiles();
                 })
-                .catch((error) => console.log(error));
+            .catch((error) => console.log(error));
             },
+        },
+        changeFiles() {
+            axios
+                .get('http://localhost:8081/changeParamsSh/')
+                .then((response) => {
+                    let json = response.data;
+                    this.changed_files = json.changed_files;
+                    console.log(json);
+                })
+            .catch((error) => console.log(error));
         },
     };
 </script>
