@@ -45,7 +45,7 @@ app.post("/params", urlencodedParser, function (req, res) {
     res.status(200);
     res.redirect("http://localhost:8080/result");
 });
-
+//get
 app.get("/params", function (req, res) {
     res.json({
     p_input: `${p_input}`,
