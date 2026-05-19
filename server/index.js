@@ -68,7 +68,6 @@ app.post("/params", urlencodedParser, function (req, res) {
     res.status(200);
     res.redirect("http://localhost:8080/result");
     
-    res.redirect("http://localhost:8080/result");
     clearAllPathAndVars();
 
     try {
