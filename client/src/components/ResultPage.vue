@@ -71,7 +71,19 @@
                 }"
                 >
                 {{ runned || "Запуск расчета" }}
-         </p>
+            </p>
+            <p
+                :class="{
+                    green: meshCreated == 'Сетка успешно создана',
+                    red:
+                    meshCreated ==
+                    'Сетка не может быть построена с данными входными параметрами.' ||
+                    meshCreated ==
+                    'Не удалось создать сетку',
+                }"
+                >
+                {{ meshCreated || "Создание сетки" }}
+            </p>
         </div>
       </div>
     </div>
@@ -94,6 +106,8 @@
             changeUserParams: "",
             changed_files: "",
             runned: "",
+            meshCreated: "",
+            id: "",
         }
     },
     created() {
@@ -151,11 +165,30 @@
         },
         run() {
             axios
-            .get(`http://localhost:8081/runned/`)
+            .get('http://localhost:8081/runned/')
             .then((response) => {
                 let json = response.data;
                 this.runned = json.runned;
                 console.log(json);
+                if (this.runned == "Расчет успешно запущен. Ожидайте...") {
+                    this.id = setTimeout(this.createdMesh, 4000);
+                }
+            })
+            .catch((error) => console.log(error));
+        },
+
+        createdMesh() {
+            axios
+            .get('http://localhost:8081/meshCreated/')
+            .then((response) => {
+            let json = response.data;
+            this.meshCreated = json.meshCreated;
+            if (json.meshCreated !== "") {
+                clearTimeout(this.id);
+            } else {
+                setTimeout(this.createdMesh, 4000);
+            }
+            console.log(json);
             })
             .catch((error) => console.log(error));
         },

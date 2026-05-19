@@ -6,9 +6,9 @@
                 <input type="number" 
                     name="p_input" 
                     v-model="P_input"
-                     min="1" 
-                     @keypress="NumbersOnly"
-                     required />
+                    min="1" 
+                    @keypress="NumbersOnly"
+                    required />
                 <label>Давление воздуха <b>P₀</b> на входе в сопло (Па)</label>
             </div>
             <div class="input-container">
@@ -46,6 +46,30 @@
                     required/>
                 <label>Угол раскрытия сопла <b>α</b> - входная часть (°)</label>
             </div>
+            <div class="input-container">
+                <input
+                    type="number"
+                    class="inputbox"
+                    name="p_output"
+                    v-model="P_output"
+                    min="1"
+                    step="any"
+                    @keypress="NumbersOnly"
+                    required />
+                <label>Давление на выходе <b>P<sub>вых</sub></b> (Па)</label>
+            </div>
+            <div class="input-container">
+                <input
+                    type="number"
+                    class="inputbox"
+                    name="betta"
+                    v-model="Betta"
+                    min="1"
+                    step="any"
+                    @keypress="NumbersOnly"
+                    required />
+                <label>Угол раскрытия <b>β</b> – выходная часть (°)</label>
+            </div>
             <button type="submit" class="btn">Расчет</button>
         </form>
     </div>
@@ -69,9 +93,9 @@ export default {
             evt = (evt) ? evt : window.event;
             var charCode = (evt.which) ? evt.which : evt.keyCode;
             if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-            evt.preventDefault();
+                evt.preventDefault();
             } else {
-            return true;
+                return true;
             }
         }
     },
@@ -96,7 +120,7 @@ export default {
         padding: 0 30px;
         padding-bottom: 30px;
         display: inline-block;
-        width: 45%;
+        width: 55%;
         overflow: hidden;
         background-size: cover;
         box-shadow: 10px 5px 5px #d3d3d3;

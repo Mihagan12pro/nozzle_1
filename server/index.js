@@ -45,6 +45,8 @@ let spawnchangeParams = null;
 let runned = "";
 let spawnRun = null;
 
+let meshCreatedAbort = false;
+
 const fs = require("fs");
 let existsMesh = false;
 let meshCreated = "";
@@ -65,6 +67,9 @@ app.post("/params", urlencodedParser, function (req, res) {
     betta = req.body.betta;
     res.status(200);
     res.redirect("http://localhost:8080/result");
+    
+    res.redirect("http://localhost:8080/result");
+    clearAllPathAndVars();
 
     try {
         cleanSh();
@@ -235,6 +240,17 @@ async function runSh() {
     console.log(`runned calc`);
     id = setTimeout(createMesh, 4000);
   });
+  spawnRun.stderr.on("data", (data) => {
+        console.log(`stderr run: ${data}`);
+        if (
+            data.includes(
+            'ERROR:salome'
+            )
+        ) {
+            meshCreatedAbort = true;
+            createMesh();
+        }
+    });
 }
 
 function createMesh() {
@@ -251,5 +267,31 @@ function createMesh() {
   if (existsMesh) {
     meshCreated = "Сетка успешно создана";
     clearTimeout(id);
-  } else setTimeout(createMesh, 4000);
+   } else if (meshCreatedAbort) {
+    meshCreated = "Сетка не может быть построена с данными входными параметрами.";
+    console.log(meshCreated);
+    clearTimeout(id);
+    } else setTimeout(createMesh, 4000);
+}
+
+function clearAllPathAndVars() {
+  existsMesh = false;
+  meshCreated = "";
+  id = "";
+  p_input = "";
+  t_input = "";
+  p_output = "";
+  g = "";
+  alpha = "";
+  betta = "";
+  cleaned = "";
+  spawnClean = null;
+  changed_params = "";
+  spawnchangeUserParams = null;
+  changed_files = "";
+  spawnchangeParams = null;
+  runned = "";
+  spawnRun = null;
+  meshCreatedAbort = false;
+  console.log("clearAllPathAndVars");
 }
