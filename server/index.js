@@ -42,6 +42,9 @@ let spawnchangeUserParams = null;
 let changed_files = "";
 let spawnchangeParams = null;
 
+let runned = "";
+let spawnRun = null;
+
 app.get("/", function (req, res) {
     console.log("/");
 });
@@ -84,6 +87,11 @@ app.use("/changeParamsSh", function (req, res, next) {
 
 app.use("/cleaned", function (req, res, next) {
     res.send({ cleaned: `${cleaned}` });
+    next();
+});
+
+app.use("/runned", function (req, res, next) {
+    res.send({ runned: `${runned}` });
     next();
 });
 
@@ -178,6 +186,38 @@ async function changeParamsSh() {
   spawnchangeParams.on("close", (code) => {
     console.log(`child process changeParamsSh exited with code ${code}`);
   });
+  spawnchangeParams.on("spawn", () => {
+    changed_files = "Файлы OpenFOAM успешно изменены.";
+    console.log(`OpenFOAM changed`);
+    runSh();
+  });
 }
 
+async function runSh() {
+  spawnRun = spawn("sh /home/vboxuser/OpenFOAM/vboxuser-13/run/nozzle_1/Run.sh", [], {
+    shell: true,
+    signal,
+  });
 
+  spawnRun.stdout.on("data", (data) => {
+    //console.log(`stdout: ${data}`);
+  });
+
+  spawnRun.stderr.on("data", (data) => {
+    console.log(`stderr run: ${data}`);
+  });
+
+  spawnRun.on("error", (error) => {
+    runned = "Ошибка при выполнении расчета";
+    console.log(`error: ${error.message}`);
+  });
+
+  spawnRun.on("spawn", () => {
+    runned = "Расчет успешно запущен. Ожидайте...";
+    console.log(`runned calc`);
+  });
+
+  spawnRun.on("close", (code) => {
+    console.log(`child process runSh exited with code ${code}`);
+  });
+}
