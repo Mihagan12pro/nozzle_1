@@ -39,6 +39,9 @@ let spawnClean = null;
 let changed_params = "";
 let spawnchangeUserParams = null;
 
+let changed_files = "";
+let spawnchangeParams = null;
+
 app.get("/", function (req, res) {
     console.log("/");
 });
@@ -176,3 +179,5 @@ async function changeParamsSh() {
     console.log(`child process changeParamsSh exited with code ${code}`);
   });
 }
+
+

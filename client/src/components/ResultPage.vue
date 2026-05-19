@@ -35,13 +35,12 @@
             <h2>Подготовка к расчету:</h2>
             <p
                 :class="{
-                green: cleaned == 'Файлы предыдущего решения успешно удалены.',
-                red: cleaned == 'Не удалось очистить файлы предыдущего решения.',
+                    green: cleaned == 'Файлы предыдущего решения успешно удалены.',
+                    red: cleaned == 'Не удалось очистить файлы предыдущего решения.',
                 }"
-            >
+                >
                 {{ cleaned || "Очистка файлов предыдущего решения" }}
             </p>
-
             <p
                 :class="{
                     green:
@@ -63,7 +62,7 @@
                     'Не удалось изменить параметры в файлах OpenFOAM.',
                 }"
                 >
-                {{ changed_files || "Изменение файлов OpenFOAM" }}
+                {{ changed_files || "Изменение файлов OpenFOAM" }}    
             </p>
         </div>
       </div>
@@ -72,7 +71,7 @@
 </template>
 
 <script>
-  import axios from 'axios';
+  import axios from "axios";
   export default {
     name: "ResultPage",
     data() {
@@ -85,7 +84,7 @@
             Betta: "",
             cleaned: "",
             changeUserParams: "",
-            changed_files: "",
+            changed_files: ""
         }
     },
     created() {
@@ -107,6 +106,7 @@
             })
             .catch((error) => console.log(error));
         },
+
         clean() {
             axios
                 .get(`http://localhost:8081/cleaned/`)
@@ -114,32 +114,33 @@
                     let json = response.data;
                     this.cleaned = json.cleaned;
                     console.log(json);
-                    this.changeParams();
-                })
-            .catch((error) => console.log(error));
-        },
-        changeParams() {
-            axios
-                .get('http://localhost:8081/changeUserParams/')
-                .then((response) => {
-                    let json = response.data;
-                    this.changeUserParams = json.changed;
-                    console.log(json);
                     this.changeFiles();
                 })
+                .catch((error) => console.log(error));
+        },
+        changeParams() {
+        axios
+            .get('http://localhost:8081/changeUserParams/')
+            .then((response) => {
+                let json = response.data;
+                this.changeUserParams = json.changed;
+                console.log(json);
+            })
             .catch((error) => console.log(error));
         },
+
         changeFiles() {
-            axios
-                .get('http://localhost:8081/changeParamsSh/')
-                .then((response) => {
-                    let json = response.data;
-                    this.changed_files = json.changed_files;
-                    console.log(json);
-                })
+        axios
+            .get('http://localhost:8081/changeParamsSh/')
+            .then((response) => {
+            let json = response.data;
+            this.changed_files = json.changed_files;
+            console.log(json);
+            })
             .catch((error) => console.log(error));
         },
-    }
+    },
+  };
 </script>
 
 <style scoped>
@@ -178,6 +179,7 @@
         padding: 1rem 2rem 5rem 3rem;
         text-align: center;
     }
+
     .rightside {
         background-color: #ffffff;
         width: 40rem;
@@ -185,11 +187,13 @@
         box-shadow: 0px 0px 4px #3535358c;
         text-align: center;
     }
+    
     p {
         margin: 0.1rem 0;
         font-size: 1.1rem;
         font-weight: 400;
     }
+    
     .button {
         color: #fff;
         background: linear-gradient(to right, #11998e, #38ef7d);
@@ -204,10 +208,13 @@
         min-width: 500px;
         margin-top: 20px;
     }
+
     .green {
-        color:green
+        color: green;
     }
+    
     .red {
-        color: red;
+        color: rgb(163, 27, 27);
     }
+
 </style>
