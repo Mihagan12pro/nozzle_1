@@ -128,7 +128,6 @@
                     this.changeFiles();
                 })
             .catch((error) => console.log(error));
-            },
         },
         changeFiles() {
             axios
@@ -140,7 +139,7 @@
                 })
             .catch((error) => console.log(error));
         },
-    };
+    }
 </script>
 
 <style scoped>
