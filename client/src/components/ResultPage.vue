@@ -32,6 +32,15 @@
                 <button class="button">Открыть файл log для просмотра решения</button>
         </div>
         <div class="rightside">
+            <h2>Подготовка к расчету:</h2>
+            <p
+                :class="{
+                    green: cleaned == 'Файлы предыдущего решения успешно удалены.',
+                    red: cleaned == 'Не удалось очистить файлы предыдущего решения.',
+                }"
+                >
+                {{ cleaned || "Очистка файлов предыдущего решения" }}
+            </p>
         </div>
       </div>
     </div>
@@ -50,6 +59,7 @@
             G: "",
             Alpha: "",
             Betta: "",
+            cleaned: "",
         }
     },
     created() {
@@ -67,8 +77,20 @@
                 this.G = json.g;
                 this.Alpha = json.alpha;
                 this.Betta = json.betta;
+                this.clean();
             })
             .catch((error) => console.log(error));
+        },
+
+        clean() {
+            axios
+                .get(`http://localhost:8081/cleaned/`)
+                .then((response) => {
+                let json = response.data;
+                this.cleaned = json.cleaned;
+                console.log(json);
+                })
+                .catch((error) => console.log(error));
         },
     },
   };
@@ -135,5 +157,12 @@
         position: relative;
         min-width: 500px;
         margin-top: 20px;
+    }
+
+    .green {
+        color: green;
+    }
+    .red {
+        color: rgb(163, 27, 27);
     }
 </style>
