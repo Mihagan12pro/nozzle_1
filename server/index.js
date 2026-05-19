@@ -45,6 +45,11 @@ let spawnchangeParams = null;
 let runned = "";
 let spawnRun = null;
 
+const fs = require("fs");
+let existsMesh = false;
+let meshCreated = "";
+let id = "";
+
 app.get("/", function (req, res) {
     console.log("/");
 });
@@ -93,6 +98,11 @@ app.use("/cleaned", function (req, res, next) {
 app.use("/runned", function (req, res, next) {
     res.send({ runned: `${runned}` });
     next();
+});
+
+app.use("/meshCreated", function (req, res, next) {
+  res.send({ meshCreated: `${meshCreated}` });
+  next();
 });
 
 app.listen(PORT, () => console.log(`server started on port ${PORT}`));
@@ -220,4 +230,26 @@ async function runSh() {
   spawnRun.on("close", (code) => {
     console.log(`child process runSh exited with code ${code}`);
   });
+  spawnRun.on("spawn", () => {
+    runned = "Расчет успешно запущен. Ожидайте...";
+    console.log(`runned calc`);
+    id = setTimeout(createMesh, 4000);
+  });
+}
+
+function createMesh() {
+  existsMesh = "";
+  try {
+    existsMesh = fs.existsSync(
+      "/home/vboxuser/OpenFOAM/vboxuser-13/run/nozzle_1/geometry/Mesh.unv"
+    );
+    console.log("Mesh exists: ", existsMesh);
+  } catch (e) {
+    meshCreated = "Не удалось создать сетку";
+    console.log(e);
+  }
+  if (existsMesh) {
+    meshCreated = "Сетка успешно создана";
+    clearTimeout(id);
+  } else setTimeout(createMesh, 4000);
 }
