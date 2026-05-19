@@ -46,6 +46,30 @@
                     required/>
                 <label>Угол раскрытия сопла <b>α</b> - входная часть (°)</label>
             </div>
+            <div class="input-container">
+            <input
+                type="number"
+                class="inputbox"
+                name="p_output"
+                v-model="P_output"
+                min="1"
+                @keypress="NumbersOnly"
+                required/>
+            <label>Давление воздуха <b>P₁</b> на выходе из сопла (Па)</label>
+        </div>
+
+        <div class="input-container">
+            <input
+                type="number"
+                class="inputbox"
+                name="betta"
+                v-model="Betta"
+                min="1"
+                max="89"
+                @keypress="NumbersOnly"
+                required/>
+            <label>Угол раскрытия сопла <b>β</b> - выходная часть (°)</label>
+        </div>
             <button type="submit" class="btn">Расчет</button>
         </form>
     </div>
