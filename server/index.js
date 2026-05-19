@@ -39,9 +39,6 @@ let spawnClean = null;
 let changed_params = "";
 let spawnchangeUserParams = null;
 
-let changed_files = "";
-let spawnchangeParams = null;
-
 app.get("/", function (req, res) {
     console.log("/");
 });
@@ -80,11 +77,6 @@ app.get("/params", function (req, res) {
 app.use("/cleaned", function (req, res, next) {
     res.send({ cleaned: `${cleaned}` });
     next();
-});
-
-app.use("/changeParamsSh", function (req, res, next) {
-  res.send({ changed_files: `${changed_files}` });
-  next();
 });
 
 app.listen(PORT, () => console.log(`server started on port ${PORT}`));
@@ -147,34 +139,4 @@ async function changeUserParams() {
   spawnchangeUserParams.on("close", (code) => {
     console.log(`child process changeUserParams exited with code ${code}`);
   });
-  spawnchangeUserParams.on("spawn", () => {
-        changed_params = "Файл с входными значениями успешно изменен.";
-        console.log(`params.txt changed`);
-        changeParamsSh();
-    });
-}
-
-async function changeParamsSh() {
-    spawnchangeParams = spawn(
-        "sh /home/vboxuser/OpenFOAM/vboxuser-13/run/nozzle_1/ChangeParams.sh",
-        [],
-        { shell: true, signal }
-    );
-    spawnchangeParams.stdout.on("data", (data) => {
-        console.log(`stdout: ${data}`);
-    });
-    spawnchangeParams.stderr.on("data", (data) => {
-        console.log(`stderr: ${data}`);
-    });
-    spawnchangeParams.on("error", (error) => {
-        changed_files = "Не удалось изменить параметры в файлах OpenFOAM.";
-        console.log(`error: ${error.message}`);
-    });
-    spawnchangeParams.on("spawn", () => {
-        changed_files = "Файлы OpenFOAM успешно изменены.";
-        console.log(`OpenFOAM changed`);
-    });
-    spawnchangeParams.on("close", (code) => {
-        console.log(`child process changeParamsSh exited with code ${code}`);
-    });
 }
