@@ -64,6 +64,14 @@
                 >
                 {{ changed_files || "Изменение файлов OpenFOAM" }}    
             </p>
+            <p
+                :class="{
+                    green: runned == 'Расчет успешно запущен. Ожидайте...',
+                    red: runned == 'Ошибка при выполнении расчета',
+                }"
+                >
+                {{ runned || "Запуск расчета" }}
+         </p>
         </div>
       </div>
     </div>
@@ -84,7 +92,8 @@
             Betta: "",
             cleaned: "",
             changeUserParams: "",
-            changed_files: ""
+            changed_files: "",
+            runned: "",
         }
     },
     created() {
@@ -119,23 +128,34 @@
                 .catch((error) => console.log(error));
         },
         changeParams() {
-        axios
-            .get('http://localhost:8081/changeUserParams/')
-            .then((response) => {
-                let json = response.data;
-                this.changeUserParams = json.changed;
-                console.log(json);
-            })
+            axios
+                .get('http://localhost:8081/changeUserParams/')
+                .then((response) => {
+                    let json = response.data;
+                    this.changeUserParams = json.changed;
+                    console.log(json);
+                })
             .catch((error) => console.log(error));
         },
 
         changeFiles() {
-        axios
-            .get('http://localhost:8081/changeParamsSh/')
+            axios
+                .get('http://localhost:8081/changeParamsSh/')
+                .then((response) => {
+                    let json = response.data;
+                    this.changed_files = json.changed_files;
+                    console.log(json);
+                    this.run();
+                })
+            .catch((error) => console.log(error));
+        },
+        run() {
+            axios
+            .get(`http://localhost:8081/runned/`)
             .then((response) => {
-            let json = response.data;
-            this.changed_files = json.changed_files;
-            console.log(json);
+                let json = response.data;
+                this.runned = json.runned;
+                console.log(json);
             })
             .catch((error) => console.log(error));
         },
