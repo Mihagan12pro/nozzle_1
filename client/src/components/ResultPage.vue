@@ -39,6 +39,7 @@
 </template>
 
 <script>
+  import axios from "axios";
   export default {
     name: "ResultPage",
     data() {
@@ -50,6 +51,25 @@
             Alpha: "",
             Betta: "",
         }
+    },
+    created() {
+        this.getParams();   
+    },
+    methods: {
+        getParams() {
+            axios
+            .get(`http://localhost:8081/params/`)
+            .then((response) => {
+                let json = response.data;
+                this.P_input = json.p_input;
+                this.T_input = json.t_input;
+                this.P_output = json.p_output;
+                this.G = json.g;
+                this.Alpha = json.alpha;
+                this.Betta = json.betta;
+            })
+            .catch((error) => console.log(error));
+        },
     },
   };
 </script>
